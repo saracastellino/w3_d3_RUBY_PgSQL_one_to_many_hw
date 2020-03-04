@@ -20,13 +20,13 @@ album2 = Album.new({'title' => 'Appetite for Destruction', 'genre' => 'Hard rock
 album2.save
 
 
-artist2.name = ["Cindy"]
-artist2.update
-
-
-album2.title = ["GNR Lies"]
-album2.update
-
+# artist2.name = 'Cindy'
+# artist2.update
+#
+#
+# album2.title = 'GNR Lies'
+# album2.update
+#
 artist = Artist.find(artist1.id)
 
 album = Album.find(album1.id)

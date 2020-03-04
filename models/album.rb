@@ -46,12 +46,12 @@ attr_reader :id
   result = SqlRunner.run(sql, values)
   end
 
-  def Album.find(id)
+  def self.find(id)
     db = PG.connect({dbname: 'music_collection', host: 'localhost'})
     sql = "SELECT * FROM albums WHERE id = $1"
-    values = [id]
-    db.prepare("find", sql)
-    results_array = db.exec_prepared("find", values)
+    values = [@id]
+    db.prepare("all", sql)
+    results_array = db.exec_prepared("all", values)
     db.close()
     return nil if results_array.first() == nil
     album_hash = results_array[0]

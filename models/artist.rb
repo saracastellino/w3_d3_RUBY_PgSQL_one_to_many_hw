@@ -33,30 +33,39 @@ attr_accessor :id, :name
     return artists.map {|artist| Artist.new(artist)}
   end
 
-  def update
-    sql = "UPDATE artists SET (
-      name
-    ) =
-    (
-      $1
-    )
-    WHERE id = $2"
-    values = [@name, @id]
-    result = SqlRunner.run(sql, values)
-  end
+  # def update
+  #   sql = "UPDATE artists SET (
+  #     name
+  #   ) =
+  #   (
+  #     $1
+  #   )
+  #   WHERE id = $2"
+  #   values = [@name, @id]
+  #   result = SqlRunner.run(sql, values)
+  # end
 
-  def Artist.find(id) 
+  def self.find(id)
     db = PG.connect({dbname: 'music_collection', host: 'localhost'})
     sql = "SELECT * FROM artists WHERE id = $1"
-    values = [id]
-    db.prepare("find", sql)
-    results_array = db.exec_prepared("find", values)
+    values = [@id]
+    db.prepare("all", sql)
+    results_array = db.exec_prepared("all", values)
     db.close()
     return nil if results_array.first() == nil
     artist_hash = results_array[0]
     found_artist = Artist.new(artist_hash)
     return found_artist
   end
+  #
+  # def self.find
+  #   db = PG.connect({dbname:'music_collection', host: 'localhost'})
+  #   sql = "SELECT * FROM artists WHERE id = 147"
+  #   db.prepare("all", sql)
+  #   artist_found = db.exec_prepared("all")
+  #   db.close()
+  #   return artist_found.map {|artist| Property.new(artist) }
+  # end
 
   def album
     sql = "SELECT * FROM albums WHERE artist_id = $1"
