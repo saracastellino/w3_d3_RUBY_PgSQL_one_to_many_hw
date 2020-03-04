@@ -19,8 +19,19 @@ album1.save
 album2 = Album.new({'title' => 'Appetite for Destruction', 'genre' => 'Hard rock', 'artist_id' => artist2.id})
 album2.save
 
-artist1.name = "Cindy"
-artist1.update
+
+artist2.name = ["Cindy"]
+artist2.update
+
+
+album2.title = ["GNR Lies"]
+album2.update
+
+artist = Artist.find(artist1.id)
+
+album = Album.find(album1.id)
 
 binding.pry
+
+
 nil

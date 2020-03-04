@@ -1,15 +1,14 @@
-require('pg')
+
 require_relative('../db/sql_runner')
 require_relative('album.rb')
 
 class Artist
 
-attr_reader :name, :id
+attr_accessor :id, :name
 
   def initialize( options )
       @id = options['id'].to_i if options['id']
       @name = options['name']
-      @artist_id = options['artist_id'].to_i
   end
 
   def save
@@ -24,12 +23,8 @@ attr_reader :name, :id
   end
 
   def self.delete_all
-    # db = PG.connect({dbname: 'pizza_shop', host: 'localhost'})
     sql = "DELETE FROM artists"
     SqlRunner.run(sql)
-    # db.prepare("delete_all", sql)
-    # db.exec_prepared("delete_all")
-    # db.close
   end
 
   def self.all
@@ -38,18 +33,29 @@ attr_reader :name, :id
     return artists.map {|artist| Artist.new(artist)}
   end
 
-  def update()
-    sql = "
-    UPDATE artists SET (
-      name,
-      artist_id
+  def update
+    sql = "UPDATE artists SET (
+      name
     ) =
     (
-      $1,$2
+      $1
     )
-    WHERE id = $3"
-    values = [@name, @artist_id, @id]
-    SqlRunner.run(sql, values)
+    WHERE id = $2"
+    values = [@name, @id]
+    result = SqlRunner.run(sql, values)
+  end
+
+  def Artist.find(id) 
+    db = PG.connect({dbname: 'music_collection', host: 'localhost'})
+    sql = "SELECT * FROM artists WHERE id = $1"
+    values = [id]
+    db.prepare("find", sql)
+    results_array = db.exec_prepared("find", values)
+    db.close()
+    return nil if results_array.first() == nil
+    artist_hash = results_array[0]
+    found_artist = Artist.new(artist_hash)
+    return found_artist
   end
 
   def album
